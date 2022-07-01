@@ -3,6 +3,7 @@
 #include <string.h>
 #include <time.h>
 #include <stdbool.h> // Header-file for boolean data-type.
+#include <math.h>
 
 /*
 Jan	31
@@ -23,7 +24,8 @@ struct Month
 {
     bool pastMonth;
     char* monthName;
-    int days;
+    int nDays;
+    int* days;
 };
 
 
@@ -57,6 +59,9 @@ int currentDay()
 
 int currentDayZeller(int day, int month, int year)
 {
+    int reminder;
+    int increaser = 0;
+    int newF;
     /*  Zeller’s Rule
         F=k+ [(13*m-1)/5] +D+ [D/4] +[C/4]-2*C where 
 
@@ -66,6 +71,9 @@ int currentDayZeller(int day, int month, int year)
                 Mod = 123 % 10 ==> 3
                 Num = 123 / 10 ==> 12
         C is the first two digits of the year.
+
+        Sun	    Mon	    Tue	    Wed	    Thurs   Fri     Sat
+        0	    1	    2	    3	    4	    5	    6
     */
     int F, k, m, D, C;
 
@@ -117,11 +125,20 @@ int currentDayZeller(int day, int month, int year)
 
     D = year % 100;
     C = year / 100;
-    F = k + (((13*m)-1)/5) + D + (D/4) + (C/4) - (2*C);
+    F = abs(k + (int)(((13*m)-1)/5) + D + (int)(D/4) + (int)(C/4) - (2*C));
+    //printf("(int)(((13*m)-1)/5) = %i\n", (int)(((13*m)-1)/5));
 
-    printf("k=%i, m=%i, D=%i, C=%i\n", k, m, D, C);
-    //printf("F=%i\n", F); //debug
-    return F;
+
+    printf("k=%i, m=%i, D=%i, C=%i\n", k, m, D, C); //debug
+    printf("F=%i\n", F); //debug
+
+    while(((F - increaser)% 7) != 0)
+        increaser++;
+
+    newF = (F - increaser)/7;
+
+    printf("Remainder: %i\n", increaser);
+    return increaser;
 }
 
 void initialize()
@@ -143,21 +160,56 @@ void initialize()
     months[10].monthName = "November";
     months[11].monthName = "December";
 
-    months[0].days = 31;
+    months[0].nDays = 31;
+    months[0].days = malloc(sizeof(int) * months[0].nDays);
     if(currentYear()%4 == 0) //days of february
-        months[1].days = 29;
+    {
+        months[1].nDays = 29;
+        months[1].days = malloc(sizeof(int) * months[1].nDays);
+    }    
     else
-        months[1].days = 28;
-    months[2].days = 31;
-    months[3].days = 30;
-    months[4].days = 31;
-    months[5].days = 30;
-    months[6].days = 31;
-    months[7].days = 31;
-    months[8].days = 30;
-    months[9].days = 31;
-    months[10].days = 30;
-    months[11].days = 31;
+    {
+        months[1].nDays = 28;
+        months[1].days = malloc(sizeof(int) * months[1].nDays);
+    }
+    months[2].nDays = 31;
+    months[2].days = malloc(sizeof(int) * months[2].nDays);
+    months[3].nDays = 30;
+    months[3].days = malloc(sizeof(int) * months[3].nDays);
+    months[4].nDays = 31;
+    months[4].days = malloc(sizeof(int) * months[4].nDays);
+    months[5].nDays = 30;
+    months[5].days = malloc(sizeof(int) * months[5].nDays);
+    months[6].nDays = 31;
+    months[6].days = malloc(sizeof(int) * months[6].nDays);
+    months[7].nDays = 31;
+    months[7].days = malloc(sizeof(int) * months[7].nDays);
+    months[8].nDays = 30;
+    months[8].days = malloc(sizeof(int) * months[8].nDays);
+    months[9].nDays = 31;
+    months[9].days = malloc(sizeof(int) * months[9].nDays);
+    months[10].nDays = 30;
+    months[10].days = malloc(sizeof(int) * months[10].nDays);
+    months[11].nDays = 31;
+    months[11].days = malloc(sizeof(int) * months[11].nDays);
+
+    for(int i = 0; i < 12; i++)
+    {
+        for(int j = 0; j < months[i].nDays; j++)
+        {
+            months[i].days[j] = currentDayZeller(j+1, i+1, currentYear());
+            printf("Imposto a %i\n", months[i].days[j]);
+        }
+    }
+
+    printf("Printing %s's days: \n", months[6].monthName);
+    for (int i = 0; i < 31; i++)
+    {
+        printf("July %ith: %i\n", i+1, months[6].days[i]);
+    }
+    printf("Current year: %i \n", currentYear());
+    
+    
 
     
     
@@ -172,18 +224,12 @@ int main()
 {
     initialize();
 
-
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     displayCurrentDate();
 
-    printf("Current day Zeller's formula: %i\n", currentDayZeller(currentDay(), currentMonth(), currentYear()));
-    
-    
-
-
-
-    
+    printf("Current day Zeller's formula: %i, with day=%i, month = %i, year = %i\n", currentDayZeller(currentDay(), currentMonth(), currentYear()), currentDay(), currentMonth(), currentYear());
+   
     int menu;
 
 
