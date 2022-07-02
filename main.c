@@ -29,11 +29,111 @@ struct Month
 };
 
 
+void dayCodeToString(int code)
+{
+    
+    //  Sun	    Mon	    Tue	    Wed	    Thurs   Fri     Sat
+    //  0	    1	    2	    3	    4	    5	    6
+    switch (code) 
+    {
+            case 7:
+                printf("Sunday");
+                break;
+            case 1:
+                printf("Monday");
+                break;
+            case 2:
+                printf("Tuesday");
+                break;
+            case 3:
+                printf("Wednesday");
+                break;
+            case 4:
+                printf("Thursday");
+                break;
+            case 5:
+                printf("Friday");
+                break;
+            case 6:
+                printf("Saturday");
+                break;            
+            default:
+                break;
+    }
+
+}
+
 void displayCurrentDate()
 {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    printf("now: %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mday, tm.tm_mon + 1, tm.tm_hour, tm.tm_min, tm.tm_sec);    
+    //printf("now: %d-%02d-%02d %02d:%02d:%02d\n", tm.tm_year + 1900, tm.tm_mday, tm.tm_mon + 1, tm.tm_hour, tm.tm_min, tm.tm_sec);    
+    printf("%02d:%02d:%02d %d-%d-%02d\n", tm.tm_hour, tm.tm_min, tm.tm_sec, tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
+}
+
+
+
+void displayDays()
+{
+    printf("| Mon | Tue | Wed | Thu | Fri | Sat | Sun |\n");
+}
+
+void displayMonth(int monthNumber, struct Month * month)
+{
+    int offset;
+    if(month[monthNumber].days[0] > 0) //if the first day of the month isn't Sunday
+        offset = month[monthNumber].days[0] - 1;
+    else
+        offset = 6;
+    
+    int* monthDays  = malloc(sizeof(int) * 35);
+
+    printf("month[monthNumber].days[0]: %i\n", month[monthNumber].days[0]); //debug
+    printf("%s's offset: %i\n", month[monthNumber].monthName, offset); //debug
+
+    for (int i = 0; i < 35; i++)
+    {
+        if(i < offset-1 || i > month->nDays)
+            monthDays[i] = 0;
+        else
+            monthDays[i] = i-(offset-1);
+            
+    }
+    /*
+    char ** monthDaysStr = malloc(sizeof(char**) * 35);
+    for (int i = 0; i < 35; i++)
+    {
+        monthDaysStr[i] = malloc(sizeof(char*)*3);
+    }
+    
+
+    
+    for (int i = 0; i < 35; i++)
+    {
+        if (monthDays[i] == 0)
+        {
+            monthDaysStr[i] = 0;
+            //strcpy(monthDaysStr[i], "\0"); //THIS NEEDS TO BE CHECKED
+        }
+        else
+            monthDaysStr[i][i] = monthDays[i] + '0';
+            //itoa(monthDays[i], monthDaysStr[i], 10);
+
+    }*/
+    //IS CONVERTING TO CHAR THE RIGHT MOVE?
+    
+    printf("|-----|-----|-----|-----|-----|-----|-----|\n");
+    printf("| %2i  |  %2i |  %2i |  %2i |  %2i |  %2i |  %2i |\n", monthDays[0], monthDays[1], monthDays[2], monthDays[3], monthDays[4], monthDays[5], monthDays[6]);
+    printf("|-----|-----|-----|-----|-----|-----|-----|\n");
+    printf("| %2i  |  %2i |  %2i |  %2i |  %2i |  %2i |  %2i |\n", monthDays[7], monthDays[8], monthDays[9], monthDays[10], monthDays[11], monthDays[12], monthDays[13]);
+    printf("|-----|-----|-----|-----|-----|-----|-----|\n");
+    printf("| %2i  |  %2i |  %2i |  %2i |  %2i |  %2i |  %2i |\n", monthDays[14], monthDays[15], monthDays[16], monthDays[17], monthDays[18], monthDays[19], monthDays[20]);
+    printf("|-----|-----|-----|-----|-----|-----|-----|\n");
+    printf("| %2i  |  %2i |  %2i |  %2i |  %2i |  %2i |  %2i |\n", monthDays[21], monthDays[22], monthDays[23], monthDays[24], monthDays[25], monthDays[26], monthDays[27]);
+    printf("|-----|-----|-----|-----|-----|-----|-----|\n");
+    printf("| %2i  |  %2i |  %2i |  %2i |  %2i |  %2i |  %2i |\n", monthDays[28], monthDays[29], monthDays[30], monthDays[31], monthDays[32], monthDays[33], monthDays[34]);
+    printf("|-----|-----|-----|-----|-----|-----|-----|\n");
+    
 }
 
 int currentYear()
@@ -78,44 +178,44 @@ int currentDayZeller(int day, int month, int year)
     int F, k, m, D, C;
 
     k = day;
-
+    
     switch (month) 
     {
             case 3:
-                m = 1;
-                break;
-            case 4:
-                m = 2;
-                break;
-            case 5:
                 m = 3;
                 break;
-            case 6:
+            case 4:
                 m = 4;
                 break;
-            case 7:
+            case 5:
                 m = 5;
                 break;
-            case 8:
+            case 6:
                 m = 6;
                 break;
-            case 9:
+            case 7:
                 m = 7;
                 break;
-            case 10:
+            case 8:
                 m = 8;
                 break;
-            case 11:
+            case 9:
                 m = 9;
                 break;
-            case 12:
+            case 10:
                 m = 10;
                 break;
-            case 1:
+            case 11:
                 m = 11;
                 break;
-            case 2:
+            case 12:
                 m = 12;
+                break;
+            case 1:
+                m = 13;
+                break;
+            case 2:
+                m = 14;
                 break;                 
             default:
                 return(1);
@@ -125,23 +225,24 @@ int currentDayZeller(int day, int month, int year)
 
     D = year % 100;
     C = year / 100;
-    F = abs(k + (int)(((13*m)-1)/5) + D + (int)(D/4) + (int)(C/4) - (2*C));
-    //printf("(int)(((13*m)-1)/5) = %i\n", (int)(((13*m)-1)/5));
+    F = (k + (int)((13*(m+1))/5) + D + (int)(D/4) + (int)(C/4) - (2*C)) % 7;
+    //printf("(int)((13*(m+1))/5) = %i\n", (int)((13*(m+1))/5));
 
+    //printf("k=%i, m=%i, D=%i, C=%i, F=%i\n", k, m, D, C, F); //debug
 
-    printf("k=%i, m=%i, D=%i, C=%i\n", k, m, D, C); //debug
-    printf("F=%i\n", F); //debug
 
     while(((F - increaser)% 7) != 0)
         increaser++;
 
     newF = (F - increaser)/7;
 
-    printf("Remainder: %i\n", increaser);
-    return increaser;
+    //printf("Remainder: %i\n", increaser); //debug
+    //return increaser;
+    return ((F+5)%7)+1;
+
 }
 
-void initialize()
+struct Month* initialize()
 {
     struct Month * months = malloc(sizeof(struct Month) * 12); //creating each month
     for (int i = 0; i < 12; i++)
@@ -198,23 +299,24 @@ void initialize()
         for(int j = 0; j < months[i].nDays; j++)
         {
             months[i].days[j] = currentDayZeller(j+1, i+1, currentYear());
-            printf("Imposto a %i\n", months[i].days[j]);
+            //printf("Imposto a %i\n", months[i].days[j]); //debug
         }
     }
 
-    printf("Printing %s's days: \n", months[6].monthName);
-    for (int i = 0; i < 31; i++)
+    
+    //for debugging only
+    for(int j = 0; j < 12; j++)
     {
-        printf("July %ith: %i\n", i+1, months[6].days[i]);
+        printf("Printing %s's days: \n", months[j].monthName);
+        for (int i = 0; i < 31; i++)
+        {
+            printf("%s %ith %i: ",months[j].monthName, i+1, currentYear());
+            dayCodeToString(months[j].days[i]);
+            printf("\n");
+        }
     }
-    printf("Current year: %i \n", currentYear());
     
-    
-
-    
-    
-        
-
+    return months;
 }
 
 
@@ -222,17 +324,28 @@ void initialize()
 
 int main()
 {
-    initialize();
+    struct Month * months  = initialize();
 
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
-    displayCurrentDate();
 
-    printf("Current day Zeller's formula: %i, with day=%i, month = %i, year = %i\n", currentDayZeller(currentDay(), currentMonth(), currentYear()), currentDay(), currentMonth(), currentYear());
+    //printf("Current day Zeller's formula: %i, with day=%i, month = %i, year = %i\n", currentDayZeller(currentDay(), currentMonth(), currentYear()), currentDay(), currentMonth(), currentYear());
    
     int menu;
 
+    printf("\n");
+    displayCurrentDate();
+    //displayDays();
+    //displayMonth(6, months);
 
+    /*
+    for (int i = 0; i < 12; i++)
+    {
+        printf("%s:\n", months[i].monthName);
+        displayDays();
+        displayMonth(i, months);
+    }*/
+    
 
     printf("Enter a month: ");
     scanf("%d", &menu);
