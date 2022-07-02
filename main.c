@@ -32,8 +32,8 @@ struct Month
 void dayCodeToString(int code)
 {
     
-    //  Sun	    Mon	    Tue	    Wed	    Thurs   Fri     Sat
-    //  0	    1	    2	    3	    4	    5	    6
+    //Mon	Tue	    Wed	    Thurs   Fri     Sat     Sun
+    //1	    2	    3	    4	    5	    6       7
     switch (code) 
     {
             case 7:
@@ -88,14 +88,20 @@ void displayMonth(int monthNumber, struct Month * month)
     
     int* monthDays  = malloc(sizeof(int) * 35);
 
-    printf("month[monthNumber].days[0]: %i\n", month[monthNumber].days[0]); //debug
+    //printf("month[monthNumber].days[0]: %i\n", month[monthNumber].days[0]); //debug
     printf("%s's offset: %i\n", month[monthNumber].monthName, offset); //debug
+    printf("%s's days: %i\n", month[monthNumber].monthName, month->nDays);
 
     for (int i = 0; i < 35; i++)
     {
+        monthDays[i] = 0;
+        /*
         if(i < offset-1 || i > month->nDays)
             monthDays[i] = 0;
         else
+            monthDays[i] = i-(offset-1);*/
+
+        if (i >= offset -1 && i <= month->nDays)
             monthDays[i] = i-(offset-1);
             
     }
@@ -172,8 +178,8 @@ int currentDayZeller(int day, int month, int year)
                 Num = 123 / 10 ==> 12
         C is the first two digits of the year.
 
-        Sun	    Mon	    Tue	    Wed	    Thurs   Fri     Sat
-        0	    1	    2	    3	    4	    5	    6
+        Mon	    Tue	    Wed	    Thurs   Fri     Sat     Sun
+        1	    2	    3	    4	    5	    6       7
     */
     int F, k, m, D, C;
 
@@ -338,15 +344,15 @@ int main()
     //displayDays();
     //displayMonth(6, months);
 
-    /*
+    
     for (int i = 0; i < 12; i++)
     {
         printf("%s:\n", months[i].monthName);
         displayDays();
         displayMonth(i, months);
-    }*/
+    }
     
-
+    /*
     printf("Enter a month: ");
     scanf("%d", &menu);
     switch (menu) 
@@ -365,7 +371,7 @@ int main()
                 break;
         }
 
-
+    */
 
     return 0;
 }
